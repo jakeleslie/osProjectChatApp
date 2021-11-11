@@ -2,13 +2,14 @@ import threading
 import socket
 
 # Data Needed for Conncection
-host = '127.0.0.1'
-port = 4444
+host = socket.gethostname()
+port = 4000
 
 #Start Server
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 server.bind((host, port))
-server.listen()
+server.listen(20) #queue up to 20 requests
 
 # Initializes Lists for Clients and Usernames
 clients = []

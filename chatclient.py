@@ -1,12 +1,12 @@
-import threading
-import socket
+import threading, socket
 
+host = socket.gethostname() #use this for the abstraction of getting the host name
+port = 4000 #setting port
 # Lets Client Choose Username
-username = input("Choose a username: ")
+username = input("Choose a username: ") 
 
-# Server Conncection
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(('127.0.0.1',44444))
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #creating the socket
+client.connect((host, port)) #Connecting to the server by passing in the hostname, and our shared port
 
 # Listens to Server and Sends Username
 def receive():
