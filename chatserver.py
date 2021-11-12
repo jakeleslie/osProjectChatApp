@@ -1,11 +1,11 @@
 import threading
 import socket
 
-# Data Needed for Conncection
+#Need to bind this
 host = socket.gethostname()
 port = 4000
 
-#Start Server
+#create socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 server.bind((host, port))
@@ -34,7 +34,7 @@ def handle(client):
             clients.remove(client)
             client.close()
             username = usernames[index]
-            broadcast(f'{username} has left.'.encode('ascii'))
+            broadcast(f'{username} has left\n'.encode('ascii'))
             usernames.remove(username)
             break
 
@@ -51,7 +51,7 @@ def receive():
         username = client.recv(1024).decode('ascii')
 
         # Ensures a Maximum of 20 Client Conncections
-        if (len(usernames) > 19):
+        if (len(usernames) > 20):
             print("Only 20 Connections Allowed")
             index = clients.index(client)
             clients.remove(client)
@@ -66,8 +66,8 @@ def receive():
         
         # Displays Username
         print("Username is {}".format(username))
-        broadcast("{} has joined the chat!".format(username).encode('ascii'))
-        client.send('Connected to the server!'.encode('ascii'))
+        broadcast("{} has joined the chat! ".format(username).encode('ascii'))
+        client.send('You have connected to the server!'.encode('ascii'))
 
         #Thread Hanling For Client
         thread = threading.Thread(target=handle, args=(client,))

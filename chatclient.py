@@ -23,11 +23,11 @@ def receive():
             print("An error with the client has occurred.")
             client.close()
             break
-
+        
 #Sends Messages to Server
 def write():
     while True:
-        message = '{}: {}'.format(username, input(''))
+        message = '{} > {}'.format(username, input(''))
         client.send(message.encode('ascii'))
 
 # Threads for Listening and Writing
