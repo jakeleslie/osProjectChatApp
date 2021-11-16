@@ -1,38 +1,44 @@
+# Need to import these to use threads, and to use sockets
 import threading, socket
 
-host = socket.gethostname() #use this for the abstraction of getting the host name
-port = 4000 #setting port
-# Lets Client Choose Username
+# Use this function to easily get the host name for easy connections
+host = socket.gethostname() 
+# Manually setting our port to 4000
+port = 4000
+# Letting the current client choose their username
 username = input("Choose a username: ") 
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #creating the socket
-client.connect((host, port)) #Connecting to the server by passing in the hostname, and our shared port
+#Creating a socket 
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# Connecting to the host and port that we have
+client.connect((host, port)) 
 
 # Listens to Server and Sends Username
 def receive():
     while True:
-        try:
-            # Receives Messages From Server
+        try: #While true receive messages from the server, with a size of 1024 bites and decode
             message = client.recv(1024).decode('ascii')
             if message == 'NAME':
-                client.send(username.encode('ascii'))
-            else:
+                client.send(username.encode('ascii')) #If message == NAME, then encode the ascii
+            else: #else we print out the message
                 print(message)
         except:
             # Closes Connection for Error
             print("An error with the client has occurred.")
-            client.close()
+            client.close() # Throws an exception if there is an issue, and prints out that theres a problem and closes the client.
             break
         
 #Sends Messages to Server
 def write():
-    while True:
+    while True: #While true, output our message in the form of: username > hello there!
         message = '{} > {}'.format(username, input(''))
-        client.send(message.encode('ascii'))
+        client.send(message.encode('ascii')) 
 
 # Threads for Listening and Writing
-receive_thread = threading.Thread(target=receive)
-receive_thread.start()
+#This thread receives
+receive_t = threading.Thread(target=receive) 
+receive_t.start()
 
-write_thread = threading.Thread(target=write)
-write_thread.start()
+#This thread writes
+write_t = threading.Thread(target=write)
+write_t.start()

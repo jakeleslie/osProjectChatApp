@@ -1,7 +1,6 @@
-import threading
-import socket
+import threading, socket #Need to import this so that we can get the threading and sockets to work
 
-#Need to bind this
+#Get a host and a port so we can bind
 host = socket.gethostname()
 port = 4000
 
@@ -9,7 +8,7 @@ port = 4000
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 server.bind((host, port))
-server.listen(20) #queue up to 20 requests
+server.listen() #queue up to 20 requests
 
 # Initializes Lists for Clients and Usernames
 clients = []
@@ -25,7 +24,7 @@ def broadcast(message):
 def handle(client):
     while True:
         try:
-            # Broadcasts
+            # Broadcasts message received from client
             message = client.recv(1024)
             broadcast(message)
         except:
@@ -42,15 +41,15 @@ def handle(client):
 # Receives and Listens for Messages from Cients
 def receive():
     while True:
-        # Connects
+        # Wait for an incoming connection and accept it when it comes in, and then print that a client connected with a specific address
         client, address = server.accept()
         print("Connected with {}".format(str(address)))
 
-        #Receive Username
+        #Receive Username 
         client.send('NAME'.encode('ascii'))
         username = client.recv(1024).decode('ascii')
 
-        # Ensures a Maximum of 20 Client Conncections
+        # Ensures a Maximum of 20 Client Conncections. If greater than 21, so > 20. Print out that we have hit the max, and remove and close the client.
         if (len(usernames) > 20):
             print("Only 20 Connections Allowed")
             index = clients.index(client)
@@ -59,7 +58,7 @@ def receive():
             username = usernames[index]
             broadcast(f'{username} has been disconnected.'.encode('ascii'))
             usernames.remove(username)
-        else:
+        else: #If not greater than 20
             # Stores New Clients in Lists
             usernames.append(username)
             clients.append(client)
@@ -73,5 +72,5 @@ def receive():
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
 
-print("Server is listening...")
-receive()
+print("Server is listening...") #print that the server is listening
+receive() #Run receive function
